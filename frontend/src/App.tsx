@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { PomodoroTimer } from './components/PomodoroTimer';
+import TitleBar from './components/TitleBar';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Calendar, ListChecks, Clock, ChevronRight, ChevronDown, Check, Circle,
@@ -222,8 +223,9 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f1117] text-[#e4e7f0] font-[Segoe_UI,system-ui,sans-serif]">
-      <div className="max-w-[1600px] mx-auto px-10 py-6">
+    <div className="min-h-screen bg-[#0f1117] text-[#e4e7f0] font-[Segoe_UI,system-ui,sans-serif] flex flex-col">
+      <TitleBar />
+      <div className="flex-1 max-w-[1600px] w-full mx-auto px-10 py-6">
 
         {/* HEADER */}
         <header className="flex items-center justify-between mb-5 pb-3 border-b border-[#1e2235]">

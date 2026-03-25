@@ -1,10 +1,18 @@
-const { app, BrowserWindow, session, ipcMain, Notification, net } = require('electron');
+const { app, BrowserWindow, session, ipcMain, Notification, net, globalShortcut } = require('electron');
 const path = require('path');
 
+let mainWin;
+
 function createWindow() {
-  const win = new BrowserWindow({
+  mainWin = new BrowserWindow({
     width: 1400,
     height: 900,
+    minWidth: 900,
+    minHeight: 600,
+    frame: false,
+    titleBarStyle: 'hidden',
+    backgroundColor: '#1a1d27',
+    show: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -12,9 +20,49 @@ function createWindow() {
     }
   });
 
-  // En desarrollo, apunta al dev server de Vite
-  win.loadURL('http://localhost:5173');
+  mainWin.once('ready-to-show', () => {
+    mainWin.show();
+  });
+
+  mainWin.on('maximize', () => {
+    mainWin.webContents.send('window-maximized', true);
+  });
+
+  mainWin.on('unmaximize', () => {
+    mainWin.webContents.send('window-maximized', false);
+  });
+
+  mainWin.webContents.on('will-navigate', (event, url) => {
+    if (!url.startsWith('http://localhost') && !url.startsWith('https://campusvirtual.ibero.edu.co')) {
+      event.preventDefault();
+    }
+  });
+
+  mainWin.loadURL('http://localhost:5173');
 }
+
+// Window control IPC handlers
+ipcMain.on('window-minimize', () => {
+  if (mainWin) mainWin.minimize();
+});
+
+ipcMain.on('window-maximize', () => {
+  if (mainWin) {
+    if (mainWin.isMaximized()) {
+      mainWin.unmaximize();
+    } else {
+      mainWin.maximize();
+    }
+  }
+});
+
+ipcMain.on('window-close', () => {
+  if (mainWin) mainWin.close();
+});
+
+ipcMain.handle('window-is-maximized', () => {
+  return mainWin ? mainWin.isMaximized() : false;
+});
 
 // IPC handler for automated Moodle login
 ipcMain.handle('open-moodle-login', async () => {

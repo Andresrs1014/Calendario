@@ -1,11 +1,44 @@
 {
-  "name": "calendario-desktop",
-  "version": "0.1.0",
+  "name": "calendario-ibero",
+  "version": "1.0.0",
+  "description": "Calendario Académico - Universidad Iberoamericana",
   "main": "src/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dev": "electron .",
+    "build": "electron-builder --win",
+    "build:dir": "electron-builder --win --dir"
   },
   "devDependencies": {
-    "electron": "^25.1.1"
+    "electron": "^25.1.1",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.ibero.calendario",
+    "productName": "Calendario Ibero",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Calendario Ibero"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ]
   }
 }
